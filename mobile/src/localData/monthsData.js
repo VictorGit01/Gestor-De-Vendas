@@ -13,6 +13,12 @@ export function second_semester() {
     return data;
 }
 
+export function year_data() {
+    let data = salesData;
+
+    return data;
+}
+
 // export const first_semester = [
 //     {
 //         name: 'Jan',

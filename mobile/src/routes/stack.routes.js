@@ -4,6 +4,8 @@ import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/
 import Splash from '../pages/Splash';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
+import UserInfo from '../pages/UserInfo';
+import NewPassword from '../pages/NewPassword';
 
 const stackRoutes = createStackNavigator();
 
@@ -28,6 +30,14 @@ const AppRoutes = () => (
         <stackRoutes.Screen
             name="Dashboard"
             component={Dashboard}
+        />
+        <stackRoutes.Screen
+            name="UserInfo"
+            component={UserInfo}
+        />
+        <stackRoutes.Screen
+            name="NewPassword"
+            component={NewPassword}
         />
     </stackRoutes.Navigator>
 );

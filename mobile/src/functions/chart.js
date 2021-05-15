@@ -63,13 +63,13 @@ export function percentageDifference(semesterData, setSalesInfo) {
 
     // Calculate total sales
     let totalSales = filterChartData.reduce((a, b) => a + (b.y || 0), 0)
-    
+
     // 
     let percentageDifference = filterChartData.map(item => {
         let date = new Date();
         let currentMonth = date.getMonth();
+
         if (item.id == currentMonth - 1) {
-        
             let lastMonth = filterChartData[currentMonth - 1];
             let thisMonth = filterChartData[currentMonth];
     
@@ -78,10 +78,11 @@ export function percentageDifference(semesterData, setSalesInfo) {
         
             let percentageDifference = Number(percentageThisMonth) - Number(percentageOfLastMonth);
             
-            
             return percentageDifference;
         }
     }).find(a => a != undefined);
+    console.log('PERCENTAGE');
+    console.log(percentageDifference);
 
     setSalesInfo({ percentageDifference: isNaN(percentageDifference) ? 0 : Number(percentageDifference) });
 };

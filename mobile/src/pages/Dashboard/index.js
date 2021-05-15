@@ -1,9 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Button, SafeAreaView, ScrollView, View, Text } from 'react-native';
+import { 
+    SafeAreaView, 
+    ScrollView, 
+    View
+} from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 import { StatusBar } from 'expo-status-bar';
 
-import NavBar from '../../components/NavBar';
-import Header from '../../components/DashboardHeader';
+import NavBar from '../../components/NavBar/';
+import Header from '../../components/Header';
 import CategoryHeaderSection from '../../components/CategoryHeaderSection';
 import PickerSelect from '../../components/PickerSelect';
 import Chart from '../../components/Chart';
@@ -19,11 +24,17 @@ function Dashboard() {
         value: 1, index: 1
     });
 
+    const navigation = useNavigation();
+
+    function navigateToUserInfo() {
+        navigation.navigate('UserInfo');
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={colors.blue_light} style='light' />
-            <NavBar />
-            <Header />
+            <NavBar page="dashboard" navigateToUserInfo={navigateToUserInfo} />
+            <Header page="dashboard" />
             <CategoryHeaderSection
                 selectedView={selectedView}
                 setSelectedView={setSelectedView}

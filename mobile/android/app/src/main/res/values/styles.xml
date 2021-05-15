@@ -9,4 +9,14 @@
     <item name="android:windowBackground">@drawable/splashscreen</item>
     <!-- Customize your splash screen theme here -->
   </style>
+
+  <!-- Customize your datetimepicker -->
+  <style name="CalendarDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+    <!-- <item name="colorAccent">@color/#0FF2C9</item> -->
+    <item name="colorAccent">#0FF2C9</item>
+    <!-- <item name="android:textColor">@color/#0FF2C9</item> -->
+    <item name="android:textColor">#0FF2C9</item>
+    <!-- <item name="android:textColorPrimary">@color/#0FF2C9</item> -->
+    <item name="android:textColorPrimary">#0FF2C9</item>
+  </style>
 </resources>

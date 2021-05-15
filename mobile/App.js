@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { SalesProvider } from './src/contexts/sales';
 
+import colors from './src/styles/colors';
+
 import Routes from './src/routes';
 
 export default function App() {
@@ -34,7 +36,7 @@ export default function App() {
 
   return (
     <SalesProvider>
-      <StatusBar style="light" />
+      <StatusBar style="light" backgroundColor={colors.blue_light} />
       <Routes />
     </SalesProvider>
   );

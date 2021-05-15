@@ -1,18 +1,34 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, StatusBar } from 'react-native';
 
 import colors from '../../styles/colors';
 import fonts from '../../styles/fonts';
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
         height: 60,
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
-        paddingHorizontal: 24,
         backgroundColor: colors.blue_light,
+        paddingHorizontal: 24,
+        marginTop: StatusBar.currentHeight
     },
 
+    backIcon: {
+        height: 30,
+        width: 30,
+        // backgroundColor: 'tomato',
+        resizeMode: "contain"
+    },
+
+    title: {
+        fontSize: 20,
+        fontFamily: fonts.heading,
+        lineHeight: 32,
+        color: colors.white,
+    },
+
+    // Dashboard:
     userButton: {
         height: 42,
         flexDirection: 'row',
