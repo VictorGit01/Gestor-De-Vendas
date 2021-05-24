@@ -1,11 +1,18 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 import { RectButton } from 'react-native-gesture-handler';
 import { FontAwesome5, Entypo } from '@expo/vector-icons';
 
 import styles from './styles';
 
 export default function Buttons() {
+    const navigation = useNavigation();
+
+    function navigateToProducts() {
+        navigation.navigate('Products')
+    }
+
     return (
         <View style={styles.container}>
             <RectButton 
@@ -17,7 +24,7 @@ export default function Buttons() {
             </RectButton>
 
             <RectButton 
-                onPress={() => {}}
+                onPress={navigateToProducts}
                 style={[styles.button, styles.buttonSecondary]}
             >
                 <Entypo name="archive" size={40} color="#fff" />

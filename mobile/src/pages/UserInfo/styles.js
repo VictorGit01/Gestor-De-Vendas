@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     },
 
     scrollContent: {
-        height: height - (StatusBar.currentHeight + 60),
+        height: height - (StatusBar.currentHeight + 90),
         justifyContent: 'space-between',
         paddingHorizontal: 20,
         paddingTop: 20,
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
     infoBar: {
         // paddingVertical: 20,
-        paddingBottom: 10
+        paddingBottom: 20
     },
 
     title: {

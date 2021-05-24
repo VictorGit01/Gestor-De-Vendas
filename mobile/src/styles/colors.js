@@ -10,14 +10,19 @@ export default {
     white_70_percent: 'rgba(255, 255, 255, .7)',
 
     rose: '#F299D3',
-    rose_light: 'rgba(242, 153, 211, .8)',
+    rose_light: 'rgba(242, 153, 211, .3)',
 
     violet: '#BF3099',
+    violet_dark: '#98267A',
+    // violet_light: 'rgba(191, 48, 153, .3)',
+    violet_light: '#D867BA',
 
     gray: '#98A6A3',
     gray_line: '#D3E2E5',
     gray_input: '#BCCCC9',
     gray_search_input: '#D4C2FF',
+
+    overlay_opacity: 'rgba(0, 0, 0, .5)',
 
     green: '#04D361',
     green_light: '#39CC83',

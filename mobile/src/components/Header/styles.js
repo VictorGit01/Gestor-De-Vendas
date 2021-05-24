@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
     },
 
-    icon: {
+    calendarIcon: {
         fontSize: 20,
         color: colors.shape,
     },
@@ -54,7 +54,64 @@ const styles = StyleSheet.create({
     statistic: {
         fontSize: 16,
         color: colors.white_70_percent,
-    }
+    },
+
+    // Clients and Products:
+    searchContainer: {
+        alignItems: 'stretch',
+        backgroundColor: colors.shape,
+        // padding: 24,
+    },
+
+    searchContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: colors.blue_light,
+        padding: 24
+    },
+    
+    amount: {
+        fontSize: 14,
+        fontFamily: fonts.text,
+        color: colors.white,
+    },
+
+    inputContainer: {
+        width: '70%',
+        // alignItems: 'flex-end',
+        // backgroundColor: 'tomato'
+    },
+
+    input: {
+        height: 46,
+        width: '100%',
+        backgroundColor: colors.white,
+        borderWidth: 1,
+        borderColor: colors.rose,
+        borderRadius: 23,
+        paddingHorizontal: 15,
+        fontSize: 16,
+        fontFamily: fonts.text,
+        color: colors.blue_dark,
+    },
+
+    searchIconContainer: {
+        height: 46,
+        width: 46,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.rose,
+        borderRadius: 23,
+        position: 'absolute',
+        right: 0
+    },
+
+    defaultIcon: {
+        fontSize: 20,
+        color: colors.white,
+    },
+
 });
 
 export default styles;

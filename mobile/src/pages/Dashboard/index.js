@@ -5,7 +5,6 @@ import {
     View
 } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { StatusBar } from 'expo-status-bar';
 
 import NavBar from '../../components/NavBar/';
 import Header from '../../components/Header';
@@ -32,7 +31,6 @@ function Dashboard() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor={colors.blue_light} style='light' />
             <NavBar page="dashboard" navigateToUserInfo={navigateToUserInfo} />
             <Header page="dashboard" />
             <CategoryHeaderSection

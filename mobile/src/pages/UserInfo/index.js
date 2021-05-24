@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
     SafeAreaView, 
     View, 
@@ -14,8 +14,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { SimpleLineIcons, Feather } from '@expo/vector-icons';
 import { isAfter, format } from 'date-fns';
 
+import { MessageContext } from '../../contexts/message';
+
 import NavBar from '../../components/NavBar';
 import Button from '../../components/Button';
+import OverlayLoader from '../../components/OverlayLoader';
 
 import styles from './styles';
 
@@ -24,6 +27,9 @@ import colors from '../../styles/colors';
 function UserInfo() {
     const [ selectedDateTime, setSelectedDateTime ] = useState(new Date());
     const [ showDatePicker, setShowDatePicker ] = useState(Platform.OS == 'ios');
+    const [ loading, setLoading ] = useState(false);
+
+    const { updateMessage } = useContext(MessageContext);
 
     const navigation = useNavigation();
     const circles = [1, 2, 3, 4, 5];
@@ -33,11 +39,8 @@ function UserInfo() {
             setShowDatePicker(oldState => !oldState);
         }
 
-        if (dateTime && isAfter(dateTime, new Date())) {
-            // setSelectedDateTime(new Date());
-
-            return Alert.alert('Escolha uma data no passado')
-        }
+        if (dateTime && isAfter(dateTime, new Date())) 
+            return updateMessage('Escolha uma data no passado');
         
         if (dateTime)
             setSelectedDateTime(dateTime);
@@ -51,9 +54,19 @@ function UserInfo() {
         navigation.navigate('NewPassword');
     }
 
+    function handleInformationUpdate() {
+        setLoading(true);
+
+        setTimeout(() => {
+            setLoading(false);
+            updateMessage('Sua infomações foram atualizadas');
+        }, 3000);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <NavBar title="Suas Informações" />
+
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps='handled'
@@ -62,6 +75,7 @@ function UserInfo() {
                     <Text style={styles.title}>E-mail cadastrado</Text>
                     <Text style={styles.subTitle}>rosiane@gmail.com</Text>
                 </View>
+
                 <View style={styles.form}>
                     <View style={styles.action}>
                         <Text style={styles.label}>Nome</Text>
@@ -138,10 +152,12 @@ function UserInfo() {
                     </View>
 
                     <View style={styles.footer}>
-                        <Button title="Salvar" onPress={() => {}} />
+                        <Button title="Salvar" onPress={handleInformationUpdate} />
                     </View>
                 </View>
             </ScrollView>
+
+            <OverlayLoader isVisible={loading} />
         </SafeAreaView>
     )
 };

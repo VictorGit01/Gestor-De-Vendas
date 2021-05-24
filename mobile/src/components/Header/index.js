@@ -1,12 +1,25 @@
 import React, { useContext } from 'react';
-import { View, Text } from 'react-native';
-import Entypo from '@expo/vector-icons/Entypo';
+import {
+    View, 
+    Text, 
+    TextInput
+} from 'react-native';
+import { RectButton } from 'react-native-gesture-handler';
+import { Entypo, FontAwesome } from '@expo/vector-icons';
 
 import { SalesContext } from '../../contexts/sales';
 
 import styles from './styles';
+import colors from '../../styles/colors';
 
-export default function Header({ page }) {
+export default function Header({
+    page, 
+    search,
+    handleSearchChange, 
+    handleSubmitSearch,
+    amountProducts, 
+    children,
+}) {
     const { salesInfo } = useContext(SalesContext);
 
     const { percentageDifference } = salesInfo;
@@ -36,7 +49,7 @@ export default function Header({ page }) {
     
                 <View style={styles.bottomContent}>
                     <View style={styles.iconContainer}>
-                        <Entypo name="calendar" style={styles.icon} />
+                        <Entypo name="calendar" style={styles.calendarIcon} />
                     </View>
     
                     <View style={styles.infoContainer}>
@@ -52,6 +65,34 @@ export default function Header({ page }) {
                     </View>
                 </View>
     
+            </View>
+        )
+    } else if (page == ("products" || "clients")) {
+        return (
+            <View style={styles.searchContainer}>
+                <View style={styles.searchContent}>
+                    <Text style={styles.amount}>{amountProducts} unidades</Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput 
+                            style={styles.input}
+                            placeholder="Buscar produto"
+                            placeholderTextColor={colors.gray_input}
+                            selectionColor={colors.rose}
+                            returnKeyType="search"
+                            onSubmitEditing={handleSubmitSearch}
+                            value={search}
+                            onChangeText={handleSearchChange}
+                        />
+                        <RectButton 
+                            style={styles.searchIconContainer}
+                            onPress={handleSubmitSearch}
+                        >
+                            <FontAwesome name="search" style={styles.defaultIcon} />
+                        </RectButton>
+                    </View>
+                </View>
+
+                {children}
             </View>
         )
     }

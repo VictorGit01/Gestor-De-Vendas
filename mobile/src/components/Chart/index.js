@@ -72,6 +72,7 @@ export default function Chart({ selectedSemester }) {
     const [ semesterData, setSemesterData ] = useState([]);
     const [ selectedMonth, setSelectedMonth ] = useState(null);
     const [ graphicData, setGraphicData ] = useState(defaultGraphicData);
+    
     const { setSalesInfo } = useContext(SalesContext);
 
     useEffect(() => {

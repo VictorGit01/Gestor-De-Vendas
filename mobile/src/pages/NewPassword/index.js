@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { 
     SafeAreaView, 
     View, 
@@ -10,8 +10,11 @@ import {
 import { useNavigation } from '@react-navigation/core';
 import FontIcon from '@expo/vector-icons/FontAwesome5';
 
+import { MessageContext } from '../../contexts/message';
+
 import NavBar from '../../components/NavBar';
 import Button from '../../components/Button';
+import OverlayLoader from '../../components/OverlayLoader';
 
 import styles from './styles';
 
@@ -21,7 +24,10 @@ function NewPassword() {
     const [ currentPassword, setCurrentPassword ] = useState('');
     const [ newPassword, setNewPassword ] = useState('');
     const [ confirmPassword, setConfirmPassword ] = useState('');
+    const [ loading, setLoading ] = useState(false);
     const [ editableField, setEditableField ] = useState(true);
+
+    const { updateMessage } = useContext(MessageContext);
 
     const [ visibility, setVisibility ] = useState({
         one: false,
@@ -71,8 +77,23 @@ function NewPassword() {
         setValue(value);
     }
 
-    function goToPreviousScreen() {
-        // navigation.goBack();
+    function handleSavePassword() {
+        setLoading(true);
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            setLoading(false);
+            updateMessage(
+                'Por favor, preencha os campos', 
+                true,
+                'error'
+            );
+        } else {
+            setTimeout(() => {
+                updateMessage('Sua senha foi alterada', true);
+                navigation.goBack();
+            }, 3000);
+        }
+
     }
 
     return (
@@ -196,9 +217,10 @@ function NewPassword() {
                 </View>
 
                 <View style={styles.footer}>
-                    <Button title="Salvar" onPress={goToPreviousScreen} />
+                    <Button title="Salvar" onPress={handleSavePassword} />
                 </View>
             </ScrollView>
+            <OverlayLoader isVisible={loading} /> 
         </SafeAreaView>
     )
 };

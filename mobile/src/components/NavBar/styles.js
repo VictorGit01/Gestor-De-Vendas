@@ -5,16 +5,29 @@ import fonts from '../../styles/fonts';
 
 const styles = StyleSheet.create({
     container: {
-        height: 60,
+        height: 90,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
         backgroundColor: colors.blue_light,
         paddingHorizontal: 24,
-        marginTop: StatusBar.currentHeight
+        // marginTop: StatusBar.currentHeight
+        paddingTop: StatusBar.currentHeight
     },
 
-    backIcon: {
+    button: {
+        padding: 5,
+    },
+
+    buttonPrimary: {
+        left: -5,
+    },
+
+    buttonSecondary: {
+        right: -5,
+    },
+
+    defaultIcon: {
         height: 30,
         width: 30,
         // backgroundColor: 'tomato',
@@ -26,6 +39,12 @@ const styles = StyleSheet.create({
         fontFamily: fonts.heading,
         lineHeight: 32,
         color: colors.white,
+    },
+    
+    ellipsisIcon: {
+        fontSize: 20,
+        color: colors.white,
+        padding: 5,
     },
 
     // Dashboard:
@@ -74,7 +93,7 @@ const styles = StyleSheet.create({
     powerIcon: {
         fontSize: 20,
         color: colors.violet
-    }
+    },
 });
 
 export default styles;
