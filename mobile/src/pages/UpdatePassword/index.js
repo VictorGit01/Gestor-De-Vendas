@@ -20,7 +20,7 @@ import styles from './styles';
 
 import colors from '../../styles/colors';
 
-function NewPassword() {
+function UpdatePassword() {
     const [ currentPassword, setCurrentPassword ] = useState('');
     const [ newPassword, setNewPassword ] = useState('');
     const [ confirmPassword, setConfirmPassword ] = useState('');
@@ -225,4 +225,4 @@ function NewPassword() {
     )
 };
 
-export default NewPassword;
+export default UpdatePassword;

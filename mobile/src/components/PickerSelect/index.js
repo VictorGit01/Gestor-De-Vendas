@@ -6,7 +6,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import styles from './styles';
 
 import colors from '../../styles/colors';
-import { semesters } from '../../localData/monthsData';
+import { semesters } from '../../functions/periods';
 
 export default function PickerSelect({
     selectedSemester,

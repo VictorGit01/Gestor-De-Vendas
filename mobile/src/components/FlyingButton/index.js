@@ -8,7 +8,7 @@ export default function FlyingButton({ onPress }) {
     return (
         <RectButton 
             style={styles.container}
-            onPress={onPress}    
+            onPress={onPress}
         >
             <Feather name="plus" style={styles.icon} />
         </RectButton>

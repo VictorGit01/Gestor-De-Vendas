@@ -130,6 +130,14 @@ function Products() {
         navigation.navigate('ProductDetails', { product: data });
     }
 
+    function navigateToCategories() {
+        navigation.navigate('Categories');
+    }
+
+    function navigateToCreateProduct() {
+        navigation.navigate('CreateProduct');;
+    }
+
     function renderTextInformation() {
         if (!filteredProducts.length && products.length && !loadingData) {
             return (
@@ -153,7 +161,11 @@ function Products() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <NavBar title="Produtos em estoque" page="products" />
+            <NavBar 
+                title="Produtos em estoque" 
+                page="products" 
+                rightPress={navigateToCategories} 
+            />
             <Header 
                 page="products" 
                 search={search}
@@ -198,7 +210,7 @@ function Products() {
                 {renderTextInformation()}
             </View>
             
-            <FlyingButton onPress={() => {}} />
+            <FlyingButton onPress={navigateToCreateProduct} />
         </SafeAreaView>
     )
 };

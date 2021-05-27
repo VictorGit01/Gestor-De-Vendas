@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import { VictoryPie } from 'victory-native';
 import  Svg from 'react-native-svg';
 
 import SalesSummary from './SalesSummary';
-import { AuthContext } from '../../contexts/auth';
 import { SalesContext } from '../../contexts/sales';
 
 import styles from './styles';
@@ -12,61 +11,12 @@ import styles from './styles';
 import colors from '../../styles/colors';
 import fonts from '../../styles/fonts';
 
-import { first_semester, second_semester, year_data } from '../../localData/monthsData';
-import salesData from '../../localData/salesData';
+import database from '../../services/database';
+import { first_semester, second_semester } from '../../functions/periods';
 import { processMonthsDataToDisplay, percentageDifference } from '../../functions/chart';
 
 const { height, width } = Dimensions.get('window');
-const defaultGraphicData = [
-    {
-      "color": "#D3E2E5",
-      "id": 0,
-      "label": "0%",
-      "name": "Janeiro",
-      "salesCount": 0,
-      "y": 100,
-    },
-    {
-      "color": "#993399",
-      "id": 1,
-      "label": "0%",
-      "name": "Fevereiro",
-      "salesCount": 0,
-      "y": 0,
-    },
-    {
-      "color": "#C8A2C8",
-      "id": 2,
-      "label": "0%",
-      "name": "Março",
-      "salesCount": 0,
-      "y": 0,
-    },
-    {
-      "color": "#00A000",
-      "id": 3,
-      "label": "0%",
-      "name": "Abril",
-      "salesCount": 0,
-      "y": 0,
-    },
-    {
-      "color": "#FF4040",
-      "id": 4,
-      "label": "0%",
-      "name": "Maio",
-      "salesCount": 0,
-      "y": 0,
-    },
-    {
-      "color": "#FFA500",
-      "id": 5,
-      "label": "0%",
-      "name": "Junho",
-      "salesCount": 0,
-      "y": 0,
-    },
-];
+const { defaultGraphicData } = database;
 
 export default function Chart({ selectedSemester }) {
     const [ semesterData, setSemesterData ] = useState([]);
@@ -76,16 +26,26 @@ export default function Chart({ selectedSemester }) {
     const { setSalesInfo } = useContext(SalesContext);
 
     useEffect(() => {
-        let data = selectedSemester.index <= 1
-        ? first_semester()
-        : second_semester()
+        let formatData = processMonthsDataToDisplay(database.sales)
+        // console.log('VALOR DE FIRST_SEMESTER')
+        // let data = first_semester(formatData)
+        percentageDifference(formatData, setSalesInfo);
 
-        setSemesterData(data);
-        setGraphicData( processMonthsDataToDisplay(data) );
-        percentageDifference(data, setSalesInfo);
+        let data = selectedSemester.index <= 1
+        ? first_semester(formatData)
+        : second_semester(formatData)
+
+        // setSemesterData(data);
+        setGraphicData(data);
         // setTimeout(() => {
         // }, 1500)
-    }, [selectedSemester])
+        // console.log('FILTRANDO DADOS DE PROCESS_MONTHS_DATA_TO_DISPLAY');
+        // console.log(processMonthsDataToDisplay(data))
+    }, [selectedSemester]);
+
+    useEffect(() => {
+        
+    }, [])
 
     // useEffect(() => {
     //     let data = [ ...first_semester(), ...second_semester() ];

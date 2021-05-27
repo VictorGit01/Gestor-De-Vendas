@@ -1,9 +1,35 @@
+import colors from '../styles/colors';
+
 export default {
     "products_categories": [
-        {"id": 1, title: "Comida"},
-        {"id": 2, title: "Acessórios"},
-        {"id": 3, title: "Beleza"},
-        {"id": 4, title: "Moda"}
+        {
+            id: 1, 
+            title: "Comida",
+            amount_products: 4,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+        {
+            id: 2, 
+            title: "Acessórios",
+            amount_products: 4,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+        {
+            id: 3, 
+            title: "Beleza",
+            amount_products: 4,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+        {
+            id: 4, 
+            title: "Moda",
+            amount_products: 4,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
     ],
 
     "products": [
@@ -126,6 +152,468 @@ export default {
             "photo": "https://images2.marisa.com.br/medias/sys_master/images/images/h35/h46/12266260660254/Calca-Masculina-Jeans-Reta-Bolsos-MR-10037567460-C1.jpg",
             "categories": [4],
             "available": true,
+        },
+    ],
+
+    "sales": [
+        {
+            id: 0,
+            name: "Janeiro",
+            color: colors.jan,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "P",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 1,
+            name: "Fevereiro",
+            color: colors.fev,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 2,
+            name: "Março",
+            color: colors.mar,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 3,
+            name: "Abril",
+            color: colors.abr,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                // {
+                //     id: 1,
+                //     product: "Tablete lacreme ao leite 100g",
+                //     client: "Pedro Henrique",
+                //     amount: 3,
+                //     total: 38.70,
+                //     status: "C",
+                //     createdAt: 9383485798345
+                // },
+            ]
+        },
+        {
+            id: 4,
+            name: "Maio",
+            color: colors.maio,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 5,
+            name: "Junho",
+            color: colors.jun,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 6,
+            name: "Julho",
+            color: colors.jul,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 7,
+            name: "Agosto",
+            color: colors.ago,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 8,
+            name: "Setembro",
+            color: colors.set,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 9,
+            name: "Outubro",
+            color: colors.out,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 10,
+            name: "Novembro",
+            color: colors.nov,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+        {
+            id: 11,
+            name: "Dezembro",
+            color: colors.dez,
+            sales: [
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+                {
+                    id: 1,
+                    product: "Tablete lacreme ao leite 100g",
+                    client: "Pedro Henrique",
+                    amount: 3,
+                    total: 38.70,
+                    status: "C",
+                    createdAt: 9383485798345
+                },
+            ]
+        },
+    ],
+
+    "defaultGraphicData": [
+        {
+          "color": "#D3E2E5",
+          "id": 0,
+          "label": "0%",
+          "name": "Janeiro",
+          "salesCount": 0,
+          "y": 100,
+        },
+        {
+          "color": "#993399",
+          "id": 1,
+          "label": "0%",
+          "name": "Fevereiro",
+          "salesCount": 0,
+          "y": 0,
+        },
+        {
+          "color": "#C8A2C8",
+          "id": 2,
+          "label": "0%",
+          "name": "Março",
+          "salesCount": 0,
+          "y": 0,
+        },
+        {
+          "color": "#00A000",
+          "id": 3,
+          "label": "0%",
+          "name": "Abril",
+          "salesCount": 0,
+          "y": 0,
+        },
+        {
+          "color": "#FF4040",
+          "id": 4,
+          "label": "0%",
+          "name": "Maio",
+          "salesCount": 0,
+          "y": 0,
+        },
+        {
+          "color": "#FFA500",
+          "id": 5,
+          "label": "0%",
+          "name": "Junho",
+          "salesCount": 0,
+          "y": 0,
         },
     ]
 }

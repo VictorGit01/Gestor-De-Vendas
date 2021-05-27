@@ -33,7 +33,11 @@ export default function OverlayMessage() {
             // deviceHeight={deviceHeight}
             hideModalContentWhileAnimating
         >
-            <View style={[styles.box, type == 'error' && styles.boxError]} >
+            <View style={[
+                styles.box, 
+                type == 'error' && styles.boxError,
+                type == 'alert' && styles.boxAlert,
+            ]} >
                 <Text style={styles.message}>
                     { title }
                 </Text>

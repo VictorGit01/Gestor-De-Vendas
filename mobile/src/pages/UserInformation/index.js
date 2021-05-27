@@ -50,8 +50,8 @@ function UserInfo() {
         setShowDatePicker(oldState => !oldState);
     }
 
-    function navigateToNewPassword() {
-        navigation.navigate('NewPassword');
+    function navigateToUpdatePassword() {
+        navigation.navigate('UpdatePassword');
     }
 
     function handleInformationUpdate() {
@@ -131,7 +131,7 @@ function UserInfo() {
                             <TouchableOpacity
                                 hitSlop={{ top: 20, bottom: 20 }}
                                 activeOpacity={.7}
-                                onPress={navigateToNewPassword}
+                                onPress={navigateToUpdatePassword}
                             >
                                 <Text style={styles.changePass}>trocar senha</Text>
                             </TouchableOpacity>

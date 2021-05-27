@@ -13,8 +13,9 @@ import styles from './styles';
 export default function NavBar({ 
     title, 
     page, 
-    navigateToUserInfo, 
+    navigateToUserInformation, 
     openModal,
+    rightPress,
     buttonsEnabled,
 }) {
     const navigation = useNavigation();
@@ -48,7 +49,10 @@ export default function NavBar({
                     <BorderlessButton 
                         style={[styles.button, styles.buttonSecondary]}
                         enabled={buttonsEnabled}
-                        onPress={page == 'product_details' && openModal}
+                        onPress={page == 'product_details' 
+                            ? openModal
+                            : rightPress
+                        }
                     >
                         {page == 'products' 
                         ? 
@@ -72,7 +76,7 @@ export default function NavBar({
                     <TouchableOpacity 
                         style={styles.userButton}
                         activeOpacity={.7}
-                        onPress={navigateToUserInfo}
+                        onPress={navigateToUserInformation}
                     >
                         <View style={styles.initialsRadius}>
                             <Text style={styles.initials}>

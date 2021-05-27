@@ -22,6 +22,10 @@ const styles = StyleSheet.create({
         backgroundColor: colors.red,
     },
 
+    boxAlert: {
+        backgroundColor: '#FFD700'
+    },
+
     message: {
         fontSize: 16,
         fontFamily: fonts.mean,

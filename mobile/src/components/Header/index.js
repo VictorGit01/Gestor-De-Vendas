@@ -95,5 +95,11 @@ export default function Header({
                 {children}
             </View>
         )
+    } else if (page == "categories") {
+        return (
+            <View style={styles.container}>
+                {children}
+            </View>
+        )
     }
 }

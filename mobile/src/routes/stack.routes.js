@@ -4,10 +4,12 @@ import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/
 import Splash from '../pages/Splash';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
-import UserInfo from '../pages/UserInfo';
-import NewPassword from '../pages/NewPassword';
+import UserInformation from '../pages/UserInformation';
+import UpdatePassword from '../pages/UpdatePassword';
 import Products from '../pages/Products';
 import ProductDetails from '../pages/ProductDetails';
+import Categories from '../pages/Categories';
+import CreateProduct from '../pages/CreateProduct';
 
 const stackRoutes = createStackNavigator();
 
@@ -37,13 +39,13 @@ const AppRoutes = () => (
         />
 
         <stackRoutes.Screen
-            name="UserInfo"
-            component={UserInfo}
+            name="UserInformation"
+            component={UserInformation}
         />
 
         <stackRoutes.Screen
-            name="NewPassword"
-            component={NewPassword}
+            name="UpdatePassword"
+            component={UpdatePassword}
         />
 
         <stackRoutes.Screen
@@ -54,6 +56,16 @@ const AppRoutes = () => (
         <stackRoutes.Screen
             name="ProductDetails"
             component={ProductDetails}
+        />
+
+        <stackRoutes.Screen
+            name="Categories"
+            component={Categories}
+        />
+
+        <stackRoutes.Screen
+            name="CreateProduct"
+            component={CreateProduct}
         />
     </stackRoutes.Navigator>
 );

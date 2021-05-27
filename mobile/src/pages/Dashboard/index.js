@@ -25,13 +25,16 @@ function Dashboard() {
 
     const navigation = useNavigation();
 
-    function navigateToUserInfo() {
-        navigation.navigate('UserInfo');
+    function navigateToUserInformation() {
+        navigation.navigate('UserInformation');
     }
 
     return (
         <SafeAreaView style={styles.container}>
-            <NavBar page="dashboard" navigateToUserInfo={navigateToUserInfo} />
+            <NavBar 
+                page="dashboard" 
+                navigateToUserInformation={navigateToUserInformation} 
+            />
             <Header page="dashboard" />
             <CategoryHeaderSection
                 selectedView={selectedView}
