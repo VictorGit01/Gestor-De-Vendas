@@ -21,14 +21,14 @@ export default function NavBar({
     const navigation = useNavigation();
 
     function goToPreviousScreen() {
-        navigation.goBack()
+        navigation.goBack();
     }
 
     return (
         <View 
             style={[
                 styles.container, 
-                {alignItems: page != "dashboard" ? 'center' : 'flex-end',}
+                {alignItems: page != "dashboard" ? 'center' : 'flex-end'}
             ]}
         >
             <StatusBar style='light' />

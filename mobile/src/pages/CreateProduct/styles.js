@@ -112,12 +112,12 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontFamily: fonts.text,
-        color: colors.blue_dark,
+        color: colors.gray_input,
     },
 
     arrowDownIcon: {
         fontSize: 24,
-        color: colors.blue_dark,
+        color: colors.gray_input,
     },
 
     switchContainer: {

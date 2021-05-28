@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { 
     SafeAreaView, 
     ScrollView, 
@@ -9,9 +9,8 @@ import {
     TouchableOpacity,
     Switch,
     Keyboard,
-    ImageBackground,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import { useRoute, useNavigation } from '@react-navigation/core';
 import { Entypo } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import CurrencyInput from 'react-native-currency-input';
@@ -20,6 +19,7 @@ import { MessageContext } from '../../contexts/message';
 
 import NavBar from '../../components/NavBar';
 import Button from '../../components/Button';
+import CategorySelect from '../../components/CategorySelect';
 import OverlayLoader from '../../components/OverlayLoader';
 
 import addImageIcon from '../../assets/icons/image-add.png';
@@ -28,13 +28,16 @@ import editImageIcon from '../../assets/icons/image-edit.png';
 import styles from './styles';
 import colors from '../../styles/colors';
 
+import database from '../../services/database';
+
 function CreateProduct() {
     const [ image, setImage ] = useState(null);
     const [ name, setName ] = useState('');
     const [ description, setDescription ] = useState('');
     const [ price, setPrice ] = useState('');
     const [ amount, setAmount ] = useState('');
-    const [ selectedCategory, setSelectedCategory ] = useState({});
+    const [ category, setCategory ] = useState('');
+    const [ selectedCategory, setSelectedCategory ] = useState('');
     const [ present_in_stock, setPresentInStock ] = useState(true);
     const [ buttonPressed, setButtonPressed ] = useState(false);
     const [ loading, setLoading ] = useState(false);
@@ -55,10 +58,33 @@ function CreateProduct() {
     const { updateMessage } = useContext(MessageContext);
     
     const navigation = useNavigation();
+    const route = useRoute();
 
     const input_ref_2 = useRef();
     const input_ref_3 = useRef();
     const input_ref_4 = useRef();
+    const modalizeRef = useRef();
+
+    useEffect(() => {
+        if (route.params) {
+            const { product } = route.params;
+
+            setImage(product.photo);
+            setName(product.name);
+            setDescription(product?.description);
+            setPrice(product.price);
+            setAmount(String(product.amount));
+            setCategory(product.category);
+            setSelectedCategory(product.categories[0]);
+
+            setIsFilled({
+                name: !!product.name,
+                description: !!product.description,
+                price: !!product.price,
+                amount: !!product.amount
+            });
+        }
+    }, []);
 
     async function handleCreateProduct() {
         if (!image)
@@ -168,13 +194,22 @@ function CreateProduct() {
         setAmount(cleaned);
     }
 
-    function handleSelectCategory() {
+    function openCategorySelect() {
+        modalizeRef.current?.open();
+    }
 
+    function closeCategorySelect() {
+        modalizeRef.current.close();
+    }
+
+    function handleSelectCategory(id) {
+        setSelectedCategory(String(id));
     }
 
     return (
         <SafeAreaView style={styles.container}>
             <NavBar title="Novo produto" />
+
             <ScrollView 
                 contentContainerStyle={styles.scrollForm}
                 keyboardShouldPersistTaps={buttonPressed ? "always" : "handled"}
@@ -265,6 +300,7 @@ function CreateProduct() {
                             { color: price == 0 ? colors.gray_input : colors.blue_dark }
                         ]}
                         placeholder="R$ 0,00"
+                        placeholderTextColor={colors.gray_input}
                         // unit="$"
                         prefix="R$ "
                         delimiter="."
@@ -280,7 +316,6 @@ function CreateProduct() {
                         onChangeValue={(text) => handleInputChange(
                             'price', text, setPrice
                         )}
-                        onChangeText={value => console.log(value)}
                     />
                 </View>
 
@@ -295,6 +330,7 @@ function CreateProduct() {
                         keyboardType="numeric"
                         returnKeyType="next"
                         ref={input_ref_4}
+                        onSubmitEditing={openCategorySelect}
                         onBlur={() => handleInputBlur('amount', amount)}
                         onFocus={() => handleInputFocus('amount')}
                         value={amount}
@@ -310,19 +346,24 @@ function CreateProduct() {
                         style={[
                             styles.input, 
                             styles.buttonSelect,
-                            selectedCategory.id && { borderColor: colors.green }
+                            category && { borderColor: colors.green }
                         ]}
                         activeOpacity={1}
+                        onPress={openCategorySelect}
                     >
                         <Text style={[
                             styles.buttonText,
-                            { color: selectedCategory.id 
-                                ? colors.blue_dark 
-                                : colors.gray_input }
+                            category && { color: colors.blue_dark }
                         ]}>
-                            {selectedCategory.id ? selectedCategory.title : 'Selecione uma categoria'}
+                            {category ? category : 'Selecione uma categoria'}
                         </Text>
-                        <Entypo name="chevron-small-down" style={styles.arrowDownIcon} />
+                        <Entypo 
+                            name="chevron-small-down" 
+                            style={[
+                                styles.arrowDownIcon,
+                                category && { color: colors.blue_dark }
+                            ]} 
+                        />
                     </TouchableOpacity>
                 </View>
 
@@ -345,6 +386,15 @@ function CreateProduct() {
                     />
                 </View>
             </ScrollView>
+
+            <CategorySelect 
+                modalizeRef={modalizeRef} 
+                closeModal={closeCategorySelect}
+                selectedId={selectedCategory} 
+                handleSelectId={handleSelectCategory}
+                setCategory={setCategory}
+                isEditable={!!route.params?.product}
+            />
             <OverlayLoader isVisible={loading} />
         </SafeAreaView>
     );

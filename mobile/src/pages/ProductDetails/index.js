@@ -76,6 +76,11 @@ function ProductDetails() {
         }, 3000);
     }
 
+    function handleEditProduct() {
+        closeModalAscending();
+        navigation.navigate('CreateProduct', { product });
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <NavBar 
@@ -134,7 +139,7 @@ function ProductDetails() {
 
             <ModalAscending 
                 modalizeRef={modalizeRef}
-                onEdit={closeModalAscending}
+                onEdit={handleEditProduct}
                 onDelete={handleConfirmationOpening}
             />
 

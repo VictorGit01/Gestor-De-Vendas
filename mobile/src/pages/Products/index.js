@@ -135,7 +135,7 @@ function Products() {
     }
 
     function navigateToCreateProduct() {
-        navigation.navigate('CreateProduct');;
+        navigation.navigate('CreateProduct');
     }
 
     function renderTextInformation() {
