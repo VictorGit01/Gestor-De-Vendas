@@ -6,29 +6,29 @@ export default {
             id: 1, 
             title: "Comida",
             amount_products: 4,
-            created_at: new Date(),
-            updated_at: new Date(),
+            created_at: 1622953951654,
+            updated_at: 1622953951654,
         },
         {
             id: 2, 
             title: "Acessórios",
             amount_products: 4,
-            created_at: new Date(),
-            updated_at: new Date(),
+            created_at: 1622953951654,
+            updated_at: 1622953951654,
         },
         {
             id: 3, 
             title: "Beleza",
             amount_products: 4,
-            created_at: new Date(),
-            updated_at: new Date(),
+            created_at: 1622953951654,
+            updated_at: 1622953951654,
         },
         {
             id: 4, 
             title: "Moda",
             amount_products: 4,
-            created_at: new Date(),
-            updated_at: new Date(),
+            created_at: 1622953951654,
+            updated_at: 1622953951654,
         },
     ],
 
@@ -615,5 +615,95 @@ export default {
           "salesCount": 0,
           "y": 0,
         },
-    ]
+    ],
+
+    // PRÓXIMAS INFORMAÇÕES NO BANCO DE DADOS:
+    "costumers": [
+        {
+            "id": 1,
+            "name": "Tiago Borges",
+            "birth_date": 662754891931,
+            "gender": "M",
+            "phone": 949912345678,
+            "email": "tiago_borges01@gmail.com"
+        },
+        {
+            "id": 2,
+            "name": "Amanda Freitas",
+            "birth_date": 662754891931,
+            "gender": "M",
+            "phone": 949912345678,
+            "email": "amanda_freitas02@gmail.com"
+        },
+    ],
+
+    "years": [
+        {
+            "id": 0,
+            "date_year": new Date().getFullYear()
+        }
+    ],
+
+    "months": [
+        {
+            id: 0,
+            name: "Janeiro",
+            color: colors.jan
+        },
+        {
+            id: 1,
+            name: "Fevereiro",
+            color: colors.fev
+        },
+        {
+            id: 2,
+            name: "Março",
+            color: colors.mar
+        },
+        {
+            id: 3,
+            name: "Abril",
+            color: colors.abr
+        },
+        {
+            id: 4,
+            name: "Maio",
+            color: colors.maio
+        },
+        {
+            id: 5,
+            name: "Junho",
+            color: colors.jun
+        },
+        {
+            id: 6,
+            name: "Julho",
+            color: colors.jul
+        },
+        {
+            id: 7,
+            name: "Agosto",
+            color: colors.ago
+        },
+        {
+            id: 8,
+            name: "Setembro",
+            color: colors.set
+        },
+        {
+            id: 9,
+            name: "Outubro",
+            color: colors.out
+        },
+        {
+            id: 10,
+            name: "Novembro",
+            color: colors.nov
+        },
+        {
+            id: 11,
+            name: "Dezembro",
+            color: colors.dez
+        },
+    ],
 }

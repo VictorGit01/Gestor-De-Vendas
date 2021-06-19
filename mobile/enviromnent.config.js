@@ -1,0 +1,27 @@
+import {
+    API_KEY,
+    AUTH_DOMAIN,
+    DATABASE_URL,
+    PROJECT_ID,
+    STORAGE_BUCKET,
+    MESSAGING_SENDER_ID,
+    APP_ID,
+    MEASUREMENT_ID,
+    USER_NAME,
+    USER_EMAIL,
+    USER_BIRTH
+} from '@env';
+
+export default {
+    API_KEY,
+    AUTH_DOMAIN,
+    DATABASE_URL,
+    PROJECT_ID,
+    STORAGE_BUCKET,
+    MESSAGING_SENDER_ID,
+    APP_ID,
+    MEASUREMENT_ID,
+    USER_NAME,
+    USER_EMAIL,
+    USER_BIRTH
+};

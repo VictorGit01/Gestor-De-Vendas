@@ -6,11 +6,12 @@ import fonts from '../../styles/fonts';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        // minHeight: 230,
+        minHeight: 250,
         maxWidth: '45%',
         alignItems: 'center',
         backgroundColor: colors.white,
         borderRadius: 10,
-        // paddingVertical: 10,
         margin: 10,
     },
 
@@ -26,17 +27,16 @@ const styles = StyleSheet.create({
 
     labelContainer: {
         flex: 1,
+        width: '100%',
         justifyContent: 'space-between',
         padding: 10,
         borderTopWidth: .5,
         borderColor: colors.gray_line,
-        // backgroundColor: 'yellow'
     },
 
     text: {
         fontFamily: fonts.text,
         color: colors.blue_dark,
-        // marginVertical: 16,
         marginBottom: 10
     },
 

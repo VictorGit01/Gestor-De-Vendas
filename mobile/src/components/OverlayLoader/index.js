@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions } from 'react-native';
 import Modal from 'react-native-modal';
 import LottieView from 'lottie-react-native';
 
@@ -17,7 +17,6 @@ export default function OverlayLoader({ isVisible }) {
             isVisible={isVisible}
             backdropOpacity={.9}
             backdropColor="transparent"
-            // onBackdropPress={}
             animationIn="fadeIn"
             animationOut="fadeOut"
             coverScreen={false}

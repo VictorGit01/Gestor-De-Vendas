@@ -1,5 +1,11 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Dimensions, StatusBar, View, Text, FlatList, TextInput } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { 
+    Dimensions, 
+    StatusBar, 
+    View, 
+    Text, 
+    ActivityIndicator,    
+} from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { BorderlessButton, RectButton } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
@@ -9,28 +15,33 @@ import { MessageContext } from '../../contexts/message';
 import styles from './styles';
 import colors from '../../styles/colors';
 
-import database from '../../services/database';
+// import database from '../../services/database_test';
+import * as products_categories_db from '../../services/database/products_categories_db';
 
 export default function CategorySelect({ 
     modalizeRef,
     closeModal,
     selectedId, 
     handleSelectId,
+    verifiedId,
+    setVerifiedId,
     setCategory,
     isEditable,
 }) {
     const [ categories, setCategories ] = useState([]);
-    const [ verifiedId, setVerifiedId ] = useState('');
+    const [ loading, setLoading ] = useState(true);
 
     const { updateMessage } = useContext(MessageContext);
 
     const { height } = Dimensions.get('window');
     const modalHeight = height - StatusBar.currentHeight;
 
-    function handleOpening() {
-        const { products_categories: data } = database;
-        
-        setCategories(data);
+    async function handleOpening() {
+        setLoading(true);
+        // const { products_categories: data } = database;
+        const data = await products_categories_db.get();
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         if (!verifiedId) {
             if (isEditable)
@@ -40,10 +51,15 @@ export default function CategorySelect({
         } else {
             handleSelectId(verifiedId);
         }
+
+
+        setCategories(data);
+        setLoading(false);
     }
 
-    function handleConfirm() {
-        const { products_categories: data } = database;
+    async function handleConfirm() {
+        // const { products_categories: data } = database;
+        const data = await products_categories_db.get();
 
         const { title: name } = data.find(a => String(a.id) === selectedId);
 
@@ -70,6 +86,17 @@ export default function CategorySelect({
                 </BorderlessButton>
             </View>
         )
+    }
+
+    function categoriesLoading() {
+        if (loading)
+            return <ActivityIndicator 
+                size={50} 
+                color={colors.blue_semi_dark} 
+                style={styles.load} 
+            />;
+
+        return <View />;
     }
 
     function categoryItem({ item }) {
@@ -104,9 +131,10 @@ export default function CategorySelect({
             flatListProps={{
                 contentContainerStyle: styles.listing,
                 keyExtractor: (item) => String(item.id),
-                data: categories,
+                data: !loading ? categories : [],
                 renderItem: categoryItem,
                 showsVerticalScrollIndicator: false,
+                ListHeaderComponent: categoriesLoading,
             }}
         />
     );

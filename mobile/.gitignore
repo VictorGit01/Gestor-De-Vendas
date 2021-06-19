@@ -37,6 +37,11 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# firebase
+#
+.env.development
+.env.production
+
 # BUCK
 buck-out/
 \.buckd/

@@ -2,12 +2,14 @@ import React, { useContext } from 'react';
 import {
     View, 
     Text, 
-    TextInput
+    TextInput,
+    ActivityIndicator,
 } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { Entypo, FontAwesome } from '@expo/vector-icons';
 
 import { SalesContext } from '../../contexts/sales';
+import { PreloadContext } from '../../contexts/preload';
 
 import styles from './styles';
 import colors from '../../styles/colors';
@@ -21,6 +23,7 @@ export default function Header({
     children,
 }) {
     const { salesInfo } = useContext(SalesContext);
+    const { preload } = useContext(PreloadContext);
 
     const { percentageDifference } = salesInfo;
 
@@ -57,10 +60,12 @@ export default function Header({
                             {`${currentDay} ${currentMonth}, ${currentYear}`}
                         </Text>
                         <Text style={styles.statistic}>
-                            {Math.abs(Number(percentageDifference))}% 
-                            {Number(percentageDifference) >= 0 
-                            ? ' a mais que no mês passado'
-                            : ' a menos que no mês passado'}
+                            {percentageDifference != 0 ?
+                                `${Math.abs(Number(percentageDifference))}% 
+                                ${Number(percentageDifference) >= 0 
+                                ? ' a mais que no mês passado'
+                                : ' a menos que no mês passado'}`
+                            : 'Nenhum resultado para esse mês'}
                         </Text>
                     </View>
                 </View>
@@ -71,7 +76,15 @@ export default function Header({
         return (
             <View style={styles.searchContainer}>
                 <View style={styles.searchContent}>
-                    <Text style={styles.amount}>{amountProducts} unidades</Text>
+                    {!preload.refresh ? 
+                    <Text style={styles.amount}>
+                        {amountProducts} unidades
+                    </Text>
+                    :
+                    <ActivityIndicator
+                        size={20} 
+                        color={colors.white}
+                    />}
                     <View style={styles.inputContainer}>
                         <TextInput 
                             style={styles.input}

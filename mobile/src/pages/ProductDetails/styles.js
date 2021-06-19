@@ -73,6 +73,10 @@ const styles = StyleSheet.create({
         color: colors.green,
     },
 
+    unavailable: {
+        color: colors.red,
+    },
+
     title: {
         fontSize: 20,
         fontFamily: fonts.heading,

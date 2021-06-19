@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.shape,
+        // backgroundColor: colors.blue_light,
     }
 });
 

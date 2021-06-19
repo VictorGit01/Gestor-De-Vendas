@@ -3,7 +3,6 @@ import { Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
 import styles from './styles';
-import colors from '../../styles/colors';
 
 export default function CategoryButton({ 
     title, 

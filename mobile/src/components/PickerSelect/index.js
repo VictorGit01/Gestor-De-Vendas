@@ -16,10 +16,9 @@ export default function PickerSelect({
         let previous = JSON.parse(JSON.stringify(await selectedSemester));
 
         if (!value || index === 0) {
-            // setSelectedSemester({ value: null, index: 0/*, color: '#999'*/ })
-            setSelectedSemester(previous)
+            setSelectedSemester(previous);
         } else {
-            setSelectedSemester({ value, index/*, color: '#000'*/ })
+            setSelectedSemester({ value, index/*, color: '#000'*/ });
         }
     }
 

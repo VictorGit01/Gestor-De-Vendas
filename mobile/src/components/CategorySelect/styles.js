@@ -21,20 +21,18 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
 
+    headerButton: {
+        padding: 5,
+    },
+    
     headerIcon: {
         fontSize: 20,
         color: colors.blue_dark,
     },
 
-    headerButton: {
-        padding: 5,
-    },
-
-    input: {
-        height: 46,
-        borderWidth: 1,
-        borderColor: colors.gray_line,
-        borderRadius: 10,
+    load: {
+        marginTop: 30,
+        color: colors.blue_dark,
     },
 
     listing: {

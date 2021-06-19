@@ -13,13 +13,13 @@ export default function ProductCard({ data, ...rest }) {
             rippleColor='rgba(0, 0, 0, .08)'
             {...rest}
         >
-            <Image source={{ uri: data.photo }} style={styles.photo} />
+            <Image source={data.photo} style={styles.photo} />
             <View style={styles.labelContainer}>
                 <Text style={styles.text}>
                     { data.name }
                 </Text>
                 <Text style={styles.price}>
-                    { `R$ ${data.price.toFixed(2).replace('.', ',')}` }
+                    { `R$ ${Number(data.price).toFixed(2).replace('.', ',')}` }
                 </Text>
                 <Feather 
                     name={data.available ? "check-circle" : "x-circle"}

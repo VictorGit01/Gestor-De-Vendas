@@ -1,19 +1,29 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { 
+    View, 
+    Text, 
+    Image, 
+    TouchableOpacity,
+    ActivityIndicator,
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
-import { BorderlessButton, RectButton } from 'react-native-gesture-handler';
+import { BorderlessButton } from 'react-native-gesture-handler';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 
 import backIcon from '../../assets/icons/back.png';
 import categoriesIcon from '../../assets/icons/categories.png';
 
 import styles from './styles';
+import colors from '../../styles/colors';
 
 export default function NavBar({ 
     title, 
     page, 
+    initials,
+    email,
     navigateToUserInformation, 
+    handleSignOut,
     openModal,
     rightPress,
     buttonsEnabled,
@@ -76,22 +86,34 @@ export default function NavBar({
                     <TouchableOpacity 
                         style={styles.userButton}
                         activeOpacity={.7}
+                        disabled={!email}
                         onPress={navigateToUserInformation}
                     >
-                        <View style={styles.initialsRadius}>
-                            <Text style={styles.initials}>
-                                RD
-                            </Text>
-                        </View>
-                        <Text style={styles.email}>
-                            rosiane@gmail.com
-                        </Text>
+                        {email ? 
+                            <>
+                                <View style={styles.initialsRadius}>
+                                    <Text style={styles.initials}>
+                                        { initials }
+                                    </Text>
+                                </View>
+                                <Text style={styles.email}>
+                                    { email }
+                                </Text>
+                            </>
+                            :
+                            <ActivityIndicator 
+                                size={20} 
+                                color={colors.white} 
+                                style={styles.indicator} 
+                            />
+                        }
                     </TouchableOpacity>
 
                     <TouchableOpacity 
                         style={styles.powerButton} 
                         activeOpacity={.6}
-                        onPress={() => {}}
+                        disabled={!email}
+                        onPress={handleSignOut}
                     >
                         <Feather name="power" style={styles.powerIcon} />
                     </TouchableOpacity>

@@ -14,7 +14,6 @@ export default function ModalAscending({ modalizeRef, onEdit, onDelete }) {
             snapPoint={170}
             modalHeight={170}
             modalStyle={styles.container}
-            // velocity={.5}
             closeAnimationConfig={{ 
                 timing: { duration: 300 },
                 spring: { speed: 4 },

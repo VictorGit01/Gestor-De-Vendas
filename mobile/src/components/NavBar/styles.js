@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         height: 90,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         backgroundColor: colors.blue_light,
         paddingHorizontal: 24,
         // marginTop: StatusBar.currentHeight
@@ -75,9 +75,13 @@ const styles = StyleSheet.create({
 
     email: {
         fontSize: 14,
-        fontFamily: fonts.text,
+        fontFamily: fonts.mean,
         color: colors.white,
         paddingHorizontal: 10,
+    },
+
+    indicator: {
+        marginHorizontal: 10,
     },
 
     powerButton: {

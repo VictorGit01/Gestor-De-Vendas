@@ -5,6 +5,7 @@ import { RectButton } from 'react-native-gesture-handler';
 import { FontAwesome5, Entypo } from '@expo/vector-icons';
 
 import styles from './styles';
+import colors from '../../styles/colors';
 
 export default function Buttons() {
     const navigation = useNavigation();
@@ -19,7 +20,7 @@ export default function Buttons() {
                 onPress={() => {}}
                 style={[styles.button, styles.buttonPrimary]}
             >
-                <FontAwesome5 name="users" size={40} color="#fff" />
+                <FontAwesome5 name="users" size={40} color={colors.white} />
                 <Text style={styles.buttonText}>Clientes</Text>
             </RectButton>
 
@@ -27,7 +28,7 @@ export default function Buttons() {
                 onPress={navigateToProducts}
                 style={[styles.button, styles.buttonSecondary]}
             >
-                <Entypo name="archive" size={40} color="#fff" />
+                <Entypo name="archive" size={40} color={colors.white} />
                 <Text style={styles.buttonText}>Produtos</Text>
             </RectButton>
         </View>

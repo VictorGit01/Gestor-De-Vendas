@@ -17,8 +17,9 @@ import Button from '../../components/Button';
 import OverlayLoader from '../../components/OverlayLoader';
 
 import styles from './styles';
-
 import colors from '../../styles/colors';
+
+import * as auth from '../../services/auth';
 
 function UpdatePassword() {
     const [ currentPassword, setCurrentPassword ] = useState('');
@@ -80,18 +81,30 @@ function UpdatePassword() {
     function handleSavePassword() {
         setLoading(true);
 
-        if (!currentPassword || !newPassword || !confirmPassword) {
+        if (!currentPassword.trim() || !newPassword.trim() || !confirmPassword.trim()) {
             setLoading(false);
             updateMessage(
-                'Por favor, preencha os campos', 
+                'Por favor, preencha os campos.', 
+                true,
+                'error'
+            );
+        } else if (newPassword !== confirmPassword) {
+            setLoading(false);
+            updateMessage(
+                'As senhas não coincidem.',
                 true,
                 'error'
             );
         } else {
-            setTimeout(() => {
-                updateMessage('Sua senha foi alterada', true);
+            auth
+            .updatePassword(currentPassword, newPassword, updateMessage)
+            .then(() => {
+                updateMessage('Sua senha foi alterada.', true);
                 navigation.goBack();
-            }, 3000);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
         }
 
     }

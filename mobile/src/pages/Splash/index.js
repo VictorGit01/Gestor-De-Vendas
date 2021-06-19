@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Image } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import React, { useEffect, useState, useContext, useRef } from 'react';
+import { Animated, Image } from 'react-native';
 import { 
     useFonts,
     Roboto_400Regular,
@@ -8,73 +7,78 @@ import {
     Roboto_700Bold
 } from '@expo-google-fonts/roboto';
 
+import { PreloadContext } from '../../contexts/preload';
+
 import styles from './styles';
 
 import splashIcon from '../../assets/splash-icon.png'
 
 function Splash() {
-    const [ logged, setLogged ] = useState(true);
     const [ loadImage, setLoadImage ] = useState(false);
-    // const [ fontsLoaded, setFontsLoaded ] = useState(false);
     const [ fontsLoaded ] = useFonts({
         Roboto_400Regular,
         Roboto_500Medium,
         Roboto_700Bold
     });
 
-    const navigation = useNavigation();
+    const { preload, setPreload } = useContext(PreloadContext);
+
+    const fadeAnim = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
-        // setTimeout(() => {
-        //     navigation.navigate('Dashboard');
-        // }, 1500); 
-        // async function loadStateOfStorageSources() {
-        //     const state_fonts = await AsyncStorage.getItem('@mobile:state_fonts')
-        //     setFontsLoaded(state_fonts ? true : false);
-        //     console.log(state_fonts);
+        let isActive = true;
+        
+        async function handleLoading() {
+            try {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                console.log('LOAD_IMAGE')
+                console.log(loadImage)
+                console.log('FONTS_LOADED')
+                console.log(fontsLoaded)
+                if (isActive) {
+                    if (loadImage && fontsLoaded) {
+                        fadeOut();
+                        setPreload({
+                            ...preload,
+                            loadImage,
+                            fontsLoaded,
+                        });
+                    }
+                }
+            } catch(error) {
+                console.log(error);
+            }
+        }
 
-            // navigateToNextPage();
-        // }// AsyncStorage.getItem('@mobile:state_fonts')
-        //     .then(state => {
-        //         if (state == 'true') {
-        //             setFontsLoaded(true);
-        //             console.log(state);
+        handleLoading();
 
-        //             navigateToNextPage();
-        //         } else {
-        //             console.log(state);
-        //             setFontsLoaded(false)
-        //         }
-        //     })
-
-        // loadStateOfStorageSources();
-        // changeColor();
-    }, []);
-
-    useEffect(() => {
-        navigateToNextPage();
+        return () => {
+            isActive = false;
+        }
     }, [loadImage, fontsLoaded]);
 
-    function navigateToNextPage() {
-        if (!logged && loadImage && fontsLoaded) {
-            setTimeout(() => {
-                navigation.navigate('Login');
-            }, 1500);
-        } else if (logged && loadImage && fontsLoaded) {
-            setTimeout(() => {
-                navigation.navigate('Dashboard');
-            }, 1500);
-        }
+    function fadeOut() {
+        Animated.timing(
+            fadeAnim,
+            {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true
+            }
+        ).start();
     }
 
     return (
-        <View style={styles.container} >
+        <Animated.View style={[
+            styles.container,
+            { opacity: fadeAnim }
+        ]}>
             <Image 
                 source={splashIcon} 
-                style={styles.image} 
-                onLoad={() => setLoadImage(true)}
+                style={styles.image}
+                onLoadEnd={() => setLoadImage(true)}
             />
-        </View>
+        </Animated.View>
     );
 };
 

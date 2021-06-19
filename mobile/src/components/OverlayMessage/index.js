@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import { MessageContext } from '../../contexts/message';
 
 import styles from './styles';
+import colors from '../../styles/colors';
 
 export default function OverlayMessage() {
     const { 
@@ -35,10 +36,14 @@ export default function OverlayMessage() {
         >
             <View style={[
                 styles.box, 
-                type == 'error' && styles.boxError,
-                type == 'alert' && styles.boxAlert,
+                type === 'error' && styles.boxError,
+                type === 'alert' && styles.boxAlert,
             ]} >
-                <Text style={styles.message}>
+                <Text style={[
+                    styles.message, 
+                    type === 'alert' && 
+                    { color: colors.blue_semi_dark }
+                ]}>
                     { title }
                 </Text>
             </View>

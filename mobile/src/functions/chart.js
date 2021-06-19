@@ -43,8 +43,6 @@ export function processMonthsDataToDisplay(semesterData) {
 
 
 export function percentageDifference(semesterData, setSalesInfo) {
-
-    
     semesterData.map(item => {
         let date = new Date();
         let currentMonth = date.getMonth();

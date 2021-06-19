@@ -11,11 +11,12 @@ const styles = StyleSheet.create({
     },
 
     box: {
-        minHeight: 50,
+        minHeight: 40,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: colors.blue_semi_dark,
+        padding: 10
     },
     
     boxError: {
@@ -28,8 +29,10 @@ const styles = StyleSheet.create({
 
     message: {
         fontSize: 16,
-        fontFamily: fonts.mean,
+        fontFamily: fonts.text,
         color: colors.white,
+        textAlign: 'center',
+        // margin: 20,
     }
 });
 

@@ -7,16 +7,12 @@ export const MessageProvider = ({ children }) => {
         visibility: false,
         title: '',
         type: 'message',
-        // container_color: colors.blue_light,
-        // title_color: colors.white,
     });
 
     function updateMessage(
         title, 
         visibility = true, 
-        type = 'message'
-        // container_color = colors.blue_light,
-        // title_color = colors.white,
+        type = 'message',
     ) {
         setMessage({
             visibility,

@@ -30,7 +30,6 @@ export default function ModalConfirmation({ title, isVisible, onCancel, onConfir
             hideModalContentWhileAnimating
         >
             <View style={styles.box}>
-                {/* <Text style={styles.title}>Tem certeza que deseja excluir este produto?</Text> */}
                 <Text style={styles.title}>
                     {title}
                 </Text>

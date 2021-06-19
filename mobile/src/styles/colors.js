@@ -29,6 +29,8 @@ export default {
 
     red: '#E33D3D',
 
+    yellow_rocketseat: '#ffcd1e',
+
     // Cores dos meses:
 
     jan: '#D3E2E5',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { 
     SafeAreaView, 
     TextInput, 
@@ -11,42 +11,65 @@ import {
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { format } from 'date-fns';
+import NetInfo from '@react-native-community/netinfo';
 
 import { MessageContext } from '../../contexts/message';
+import { PreloadContext } from '../../contexts/preload';
 
 import NavBar from '../../components/NavBar';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 import OverlayLoader from '../../components/OverlayLoader';
-import ModalConfirmation from '../../components/ModalConfirmation'
+import ModalConfirmation from '../../components/ModalConfirmation';
 
 import styles from './styles';
 import colors from '../../styles/colors';
 
-import database from '../../services/database';
+import * as categories_db from '../../services/database/products_categories_db';
+import * as products_db from '../../services/database/products_db';
 
 function Categories() {
     const [ name, setName ] = useState('');
     const [ currentId, setCurrentId ] = useState(null);
     const [ deleteId, setDeleteId ] = useState(null);
     const [ mergedCategories, setMergedCategories ] = useState([]);
-    const [ loadingData, setLoadingData ] = useState(true);
-    const [ loadingActions, setLoadingActions ] = useState(false);
+    const [ primaryLoading, setPrimaryLoading ] = useState(true);
+    const [ secondaryLoading, setSecondaryLoading ] = useState(false);
     const [ confirmationVisible, setConfirmationVisible ] = useState(false);
     const [ isFocused, setIsFocused ] = useState(false);
     const [ isFilled, setIsFilled ] = useState(false);
 
     const { updateMessage } = useContext(MessageContext);
+    const { refreshData } = useContext(PreloadContext);
+
+    const input_ref = useRef();
 
     useEffect(() => {
-        const { products_categories: data } = database;
+        let isActive = true;
+        console.log('CATGORIES SENDO CHAMADA DO LADO DE FORA')
+        
+        async function loadCategoriesData() {
+            try {
+            // const { products_categories: data } = database;
+            const categories = await categories_db.get();
 
-        const sortedData = data.sort((a, b) => (a.title > b.title) ? 1 : -1);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            if (isActive) {
+                setMergedCategories(categories);
+                setPrimaryLoading(false);
+            }
+                
+            } catch(error) {
+                console.log(error);
+            }
+        }
 
-        setTimeout(() => {
-            setMergedCategories(sortedData);
-            setLoadingData(false);
-        }, 2000);
+        loadCategoriesData();
+        
+        return () => {
+            isActive = false;
+        }
     }, []);
 
     function handleInputBlur() {
@@ -63,72 +86,94 @@ function Categories() {
         setName(value);
     }
 
-    function handleAddOrUpdateCategory() {
-        if (!name.length) {
+    async function handleNoConnection() {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        setSecondaryLoading(false);
+        updateMessage(
+            'Sem conexão com a internet.', 
+            true, 
+            'error'
+        );
+    }
 
-            updateMessage(
-                'Por favor, digite um nome de categoria', 
+    async function handleAddOrUpdateCategory() {
+        setSecondaryLoading(true);
+        
+        if (!name.trim()) {
+            setSecondaryLoading(false);
+            return updateMessage(
+                'Por favor, digite um nome de categoria.', 
                 true, 
                 'error'
             );
+        }
+        if (currentId) {
+            const state = await NetInfo.fetch();
+                
+            if (!state.isConnected)
+                return handleNoConnection();
 
-        } else if (currentId) {
-
-            setLoadingActions(true);
-            const obj = mergedCategories.find(a => a.id == currentId);
-
-            obj.title = name;
-            obj.updated_at = new Date();
-
-            const updatedData = mergedCategories.map(category => {
-                if (category.id == currentId)
-                    category = obj;
-
-                return category;
-            });
-
-            Keyboard.dismiss()
-            
-            setTimeout(() => {
-                setMergedCategories(updatedData);
-                setName('');
-                setCurrentId(null);
-                setLoadingActions(false);
-                updateMessage('Categoria atualizada');
-            }, 2000);
-
-        } else {
-
-            setLoadingActions(true);
-            const id = mergedCategories.length;
-
-            let obj = {
-                id: id + 1,
+            const updatedCategory = {
                 title: name,
-                amount_products: 0,
-                created_at: new Date(),
-                updated_at: new Date(),
-            }
+            };
             
             Keyboard.dismiss();
             
-            setTimeout(() => {
-                setMergedCategories([
-                    ...mergedCategories,
-                    obj,
-                ]);
+            categories_db
+                .update(currentId, updatedCategory)
+                .then(updatedCategories => {
+                    setName('');
+                    setIsFilled(false);
+                    setMergedCategories(updatedCategories);
+                    setCurrentId(null);
+                    setSecondaryLoading(false);
+                    refreshData(true);
+                    updateMessage('Categoria atualizada.');
+                })
+                .catch(error => {
+                    updateMessage(`${error.error} - ${error.message}`);
+                });
 
-                setName('');
-                setLoadingActions(false);
-                updateMessage('Categoria criada com sucesso');
-            }, 2000);
+            return;
+        }
+        if (!currentId) {
+            const state = await NetInfo.fetch();
 
+            if (!state.isConnected)
+                return handleNoConnection();
+
+            const newCategory = {
+                title: name,
+                amount_products: 0,
+            };
+            
+            Keyboard.dismiss();
+
+            categories_db
+                .create(newCategory)
+                .then(updatedCategories => {
+                    setMergedCategories(updatedCategories);
+        
+                    setName('');
+                    setIsFilled(false);
+                    setSecondaryLoading(false);
+                    refreshData(true);
+                    updateMessage('Categoria criada com sucesso!');
+                })
+                .catch(error => {
+                    updateMessage(`${error.error} - ${error.message}`);
+                });
+
+            return;
         }
     }
 
     function handleClickEdit(id) {
         const { title } = mergedCategories.find(a => a.id == id);
 
+        input_ref.current.focus();
+
+        setIsFilled(true);
         setName(title);
         setCurrentId(id);
     }
@@ -139,6 +184,9 @@ function Categories() {
     }
 
     function handleCancelEditing() {
+        Keyboard.dismiss();
+
+        setIsFilled(false);
         setName('');
         setCurrentId(null);
     }
@@ -148,18 +196,52 @@ function Categories() {
         setConfirmationVisible(false);
     }
 
-    function handleDeleteCategory() {
-        setLoadingActions(true);
+    async function handleDeleteCategory() {
+        setSecondaryLoading(true);
         setConfirmationVisible(false);
 
-        const updatedData = mergedCategories.filter(a => a.id !== deleteId);
+        const state = await NetInfo.fetch();
 
-        setTimeout(() => {
-            setMergedCategories(updatedData);
+        if (!state.isConnected)
+            return handleNoConnection();
+
+        const products = await products_db.get();
+        
+        const productsToDelete = products.map(product => {
+            if (product.categories[0] === Number(deleteId))
+                return product.id;
+        }).filter(product => product !== undefined);
+
+        // TIVE QUE CONSTRUIR ESTA FUNÇÃO PARA RODAR OS PROCESSOS UM APÓS O OUTRO:
+        const startPromise = productsToDelete.reduce(async (product_promise, product_id) => {
+
+            // EU ESTAVA RECENDO ERRO QUANDO TENTEI DELETAR OS PRODUTOS DA CATEGORIA
+            // SOMENTE PERCORRENDO O ARRAY E USANDO O ASYNC E AWAIT.
+            // ENTÃO CONSEGUI RESOLVER ESSE BUG PERCORRENDO A FUNÇÃO COM OS IDS DOS PRODUTOS
+            // UTILIZANDO O REDUCE QUE RETORNARÁ UMA PROMISE DO JEITO QUE CONFIGUREI.
+            await product_promise.then(async () => {
+                await products_db.remove(product_id);
+            })
+            .catch(error => {
+                updateMessage(`${error.error} - ${error.message}`);     
+            });
+
+        }, Promise.resolve());
+
+        startPromise.then(async resposta => {
+            console.log('FUNÇÃO O RETORNO DELA:')
+            console.log(resposta);
+
+            const updatedCategories = await categories_db
+                .remove(deleteId);
+
+            setMergedCategories(updatedCategories);
             setDeleteId(null);
-            setLoadingActions(false);
+            setIsFilled(false);
+            setSecondaryLoading(false);
+            refreshData(true);
             updateMessage('Categoria deletada');
-        }, 3000);
+        });
     }
 
     function renderCategory({ item }) {
@@ -191,21 +273,25 @@ function Categories() {
                 <View style={styles.extremityContainer}>
                     <Text style={styles.cardText}>Nº de produtos:</Text>
                     <Text style={styles.cardText}>
-                        {item.amount_products} {item.amount_products == 1 ? 'unidade' : 'unidades'}
+                        {item.amount_products !== 0 ? 
+                            `${item.amount_products} ${item.amount_products === 1 ? 'unidade' : 'unidades'}` 
+                        : 'sem produtos'}
                     </Text>
                 </View>
 
                 <View style={styles.extremityContainer}>
                     <Text style={styles.cardText}>Criada em:</Text>
                     <Text style={styles.cardText}>
-                        {format(item.created_at.getTime(), 'dd-MM-yyyy').replace(/-/g, '/')}
+                        {/* {format(item.created_at.getTime(), 'dd-MM-yyyy').replace(/-/g, '/')} */}
+                        {format(item.created_at, 'dd-MM-yyyy').replace(/-/g, '/')}
                     </Text>
                 </View>
 
                 <View style={styles.extremityContainer}>
                     <Text style={styles.cardText}>Atualizada em:</Text>
                     <Text style={styles.cardText}>
-                        {format(item.updated_at.getTime(), 'dd-MM-yyyy').replace(/-/g, '/')}
+                        {/* {format(item.updated_at.getTime(), 'dd-MM-yyyy').replace(/-/g, '/')} */}
+                        {format(item.updated_at, 'dd-MM-yyyy').replace(/-/g, '/')}
                     </Text>
                 </View>
             </View>
@@ -226,17 +312,18 @@ function Categories() {
                         placeholder="Nome da categoria"
                         placeholderTextColor={colors.gray_input}
                         selectionColor={colors.blue}
+                        ref={input_ref}
                         onBlur={handleInputBlur}
                         onFocus={handleInputFocus}
                         maxLength={14}
-                        editable={!loadingData}
+                        editable={!primaryLoading}
                         value={name}
                         onChangeText={handleInputChange}
                     />
                     <RectButton 
                         style={[styles.button, styles.buttonCreate]}
                         onPress={handleAddOrUpdateCategory}
-                        enabled={!loadingData}
+                        enabled={!primaryLoading}
                     >
                         <Feather name={currentId ? "check" : "plus"} style={styles.defaultIcon} />
                     </RectButton>
@@ -251,7 +338,7 @@ function Categories() {
                 <Text style={styles.label}>{name.length}/14 caracteres</Text>
             </Header>
             <View style={styles.categories}>
-                {!loadingData ?
+                {!primaryLoading ?
                 <FlatList
                     data={mergedCategories}
                     keyExtractor={(item) => String(item.id)}
@@ -261,13 +348,13 @@ function Categories() {
                 />
                 :
                 <Loader />}
-                {!mergedCategories.length && !loadingData &&
+                {!mergedCategories.length && !primaryLoading &&
                 <Text style={styles.noDataText}>
                     Você não possui nenhuma categoria. {'\n'}
                     Crie a primeira.
                 </Text>}
             </View>
-            <OverlayLoader isVisible={loadingActions} />
+            <OverlayLoader isVisible={secondaryLoading} />
             <ModalConfirmation 
                 title="Deseja mesmo remover esta categoria? Se fizer isso irá deletar também todos os produtos incluídos nela."
                 isVisible={confirmationVisible} 

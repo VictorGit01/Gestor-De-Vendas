@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { 
+    useEffect, 
+    useCallback,
+    useState, 
+    useRef, 
+    useContext 
+} from 'react';
+
 import { 
     SafeAreaView, 
     View, 
@@ -7,9 +14,12 @@ import {
     Image,
     BackHandler,
 } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/core';
+
+import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/core';
+import { format } from 'date-fns';
 
 import { MessageContext } from '../../contexts/message';
+import { PreloadContext } from '../../contexts/preload';
 
 import NavBar from '../../components/NavBar';
 import ModalAscending from '../../components/ModalAscending';
@@ -18,18 +28,68 @@ import Loader from '../../components/Loader';
 
 import styles from './styles';
 
+import * as products_db from '../../services/database/products_db';
+import * as products_categories_db from '../../services/database/products_categories_db';
+
 function ProductDetails() {
-    const [ loading, setLoading ] = useState(false);
+    const [ loading, setLoading ] = useState(true);
     const [ modalConfirmationVisible, setModalConfirmationVisible ] = useState(false);
+    const [ product, setProduct ] = useState({
+        id: 0,
+        photo: null,
+        name: '',
+        price: 0,
+        available: false,
+        amount: 1,
+        description: '',
+        category: '',
+        created_at: Date.now(),
+        updated_at: Date.now(),
+    });
 
     const { updateMessage } = useContext(MessageContext);
-
-    const route = useRoute();
-    const { product } = route.params;
+    const { refreshData } = useContext(PreloadContext);
 
     const navigation = useNavigation();
-
+    const route = useRoute();
+    const { id } = route.params;
     const modalizeRef = useRef();
+
+    useFocusEffect(
+        useCallback(() => {
+            let isActive = true;
+            
+            async function loadProductData() {
+                try {
+                    setLoading(true);
+                    const products = await products_db.get();
+                    const categories = await products_categories_db.get();
+        
+                    if (isActive) {
+                        const currentProduct = products.find(product => product.id == id);
+                        const category = categories.find(category => category.id == currentProduct.categories[0]);
+                        
+                        const updatedProduct = {
+                            ...product,
+                            ...currentProduct,
+                            category: category.title,
+                        }
+
+                        setProduct(updatedProduct);
+                        setLoading(false);
+                    }
+                } catch(error) {
+                    console.log(error);
+                } 
+            }
+    
+            loadProductData();
+
+            return () => {
+                isActive = false;
+            };
+        }, [id]),
+    );
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', onBack);
@@ -70,10 +130,13 @@ function ProductDetails() {
         setLoading(true);
         closeModalConfirmation();
 
-        setTimeout(() => {
-            updateMessage('Produto excluído', true);
-            navigation.goBack();
-        }, 3000);
+        products_db
+            .remove(product.id)
+            .then(() => {
+                updateMessage('Produto excluído', true);
+                refreshData(true);
+                navigation.goBack();
+            });
     }
 
     function handleEditProduct() {
@@ -91,11 +154,14 @@ function ProductDetails() {
             />
 
             {!loading ?
-                <ScrollView contentContainerStyle={styles.content}>
+                <ScrollView 
+                    contentContainerStyle={styles.content}
+                    showsVerticalScrollIndicator={false}
+                >
                     <View style={styles.imageContainer}>
                         <Image 
                             style={styles.image}
-                            source={{ uri: product.photo }}
+                            source={product.photo}
                         />
                     </View>
 
@@ -103,20 +169,29 @@ function ProductDetails() {
                         <Text style={styles.product}>{product.name}</Text>
                         <Text style={styles.price}>R$ {product.price.toFixed(2).replace('.', ',')}</Text>
                         <View style={styles.labelContainer}>
-                            <Text style={[styles.label, styles.available]}>{product.available ? 'Disponível' : 'Indisponível'}</Text>
-                            <Text style={styles.label}>{product.amount} unidades</Text>
+                            <Text style={[
+                                styles.label, 
+                                product.available ? styles.available : styles.unavailable,
+                            ]}>
+                                {product.available ? 'Disponível' : 'Indisponível'}
+                            </Text>
+                            <Text style={styles.label}>
+                                {product.amount}
+                                {product.amount == 1 ? ' unidade' : ' unidades'}
+                            </Text>
                         </View>
                     </View>
 
+                    {!!product.description &&
                     <View style={styles.card}>
                         <Text style={styles.title}>Descrição</Text>
                         <Text style={styles.description}>
                             {product.description}
                         </Text>
-                    </View>
+                    </View>}
 
                     <View style={styles.card}>
-                        <Text style={styles.title}>Categorias</Text>
+                        <Text style={styles.title}>Categoria</Text>
                         <Text style={styles.description}>{product.category}</Text>
                     </View>
 
@@ -124,12 +199,16 @@ function ProductDetails() {
                         <Text style={styles.title}>Datas</Text>
                         <View style={styles.labelContainer}>
                             <Text style={styles.description}>Criado em:</Text>
-                            <Text style={styles.description}>17/02/2021</Text>
+                            <Text style={styles.description}>
+                                {format(product.created_at, 'dd-MM-yyyy').replace(/-/g, '/')}
+                            </Text>
                         </View>
 
                         <View style={styles.labelContainer}>
                             <Text style={styles.description}>Atualizado em:</Text>
-                            <Text style={styles.description}>17/02/2021</Text>
+                            <Text style={styles.description}>
+                                {format(product.updated_at, 'dd-MM-yyyy').replace(/-/g, '/')}
+                            </Text>
                         </View>
                     </View>
                 </ScrollView> 

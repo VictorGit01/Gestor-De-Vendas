@@ -16,6 +16,7 @@ import * as ImagePicker from 'expo-image-picker';
 import CurrencyInput from 'react-native-currency-input';
 
 import { MessageContext } from '../../contexts/message';
+import { PreloadContext } from '../../contexts/preload';
 
 import NavBar from '../../components/NavBar';
 import Button from '../../components/Button';
@@ -28,7 +29,8 @@ import editImageIcon from '../../assets/icons/image-edit.png';
 import styles from './styles';
 import colors from '../../styles/colors';
 
-import database from '../../services/database';
+import * as products_db from '../../services/database/products_db';
+import * as storage from '../../services/storage';
 
 function CreateProduct() {
     const [ image, setImage ] = useState(null);
@@ -38,6 +40,7 @@ function CreateProduct() {
     const [ amount, setAmount ] = useState('');
     const [ category, setCategory ] = useState('');
     const [ selectedCategory, setSelectedCategory ] = useState('');
+    const [ verifiedCategory, setVerifiedCategory ] = useState('');
     const [ present_in_stock, setPresentInStock ] = useState(true);
     const [ buttonPressed, setButtonPressed ] = useState(false);
     const [ loading, setLoading ] = useState(false);
@@ -56,6 +59,7 @@ function CreateProduct() {
     });
 
     const { updateMessage } = useContext(MessageContext);
+    const { refreshData } = useContext(PreloadContext);
     
     const navigation = useNavigation();
     const route = useRoute();
@@ -66,16 +70,19 @@ function CreateProduct() {
     const modalizeRef = useRef();
 
     useEffect(() => {
+        setLoading(false)
         if (route.params) {
             const { product } = route.params;
 
-            setImage(product.photo);
+            setImage(product.photo)
             setName(product.name);
             setDescription(product?.description);
             setPrice(product.price);
             setAmount(String(product.amount));
             setCategory(product.category);
             setSelectedCategory(product.categories[0]);
+            setVerifiedCategory(product.categories[0]);
+            setPresentInStock(product.available);
 
             setIsFilled({
                 name: !!product.name,
@@ -92,30 +99,26 @@ function CreateProduct() {
                 'Selecione uma imagem.',
                 true,
                 'error',
-            )
-
-        if (!name)
+            );
+        if (!name.trim())
             return updateMessage(
                 'Digite o nome do produto.',
                 true,
                 'error',
             );
-        
-        if (!price)
+        if (!price.trim())
             return updateMessage(
                 'Informe um preço.',
                 true,
                 'error',
             );
-
-        if (!amount)
+        if (!amount.trim())
             return updateMessage(
-                'Digite o nome do produto.',
+                'Informe a quantidade desse produto.',
                 true,
                 'error',
             );
-        
-        if (!selectedCategory.id)
+        if (!verifiedCategory)
             return updateMessage(
                 'Selecione uma categoria',
                 true,
@@ -125,10 +128,49 @@ function CreateProduct() {
         Keyboard.dismiss();
         setLoading(true);
 
-        setTimeout(() => {
-            navigation.goBack();
-            updateMessage('Produto criado com sucesso!');
-        }, 3000);
+        const product = route.params?.product;
+
+        if (product?.photo_uri !== image?.db_uri) {
+            console.log('IMAGEM SELECIONADA É DIFERENTE DA ATUAL')
+            console.log(image.db_uri)
+        } else {
+            console.log('IMAGEM SELECIONADA É IGUAL A ATUAL')
+            console.log(product?.photo_uri)
+        }
+
+        const newProduct = {
+            photo_uri: product?.photo_uri !== image?.db_uri
+            ? image.uri
+            : product.photo_uri,
+            name,
+            description: description || null,
+            price,
+            amount: Number(amount),
+            categories: [Number(verifiedCategory)],
+            available: present_in_stock,
+        };
+
+        if (!route.params?.product)
+            return products_db
+                .create(newProduct, image)
+                .then(() => {
+                    navigation.goBack();
+                    updateMessage('Produto criado com sucesso!');
+                    refreshData(true);
+                });
+
+        if (route.params?.product)
+            return products_db
+                .update(
+                    product.id, 
+                    newProduct, 
+                    product?.photo_uri !== image?.db_uri && image
+                )
+                .then(() => {
+                    navigation.goBack();
+                    updateMessage('Produto atualizado!');
+                    refreshData(true);
+                });
     }
 
     async function handleImageSelect() {
@@ -136,7 +178,7 @@ function CreateProduct() {
 
         if (status !== 'granted') {
             updateMessage(
-                'Ops! Precisamos de acesso às suas fotos',
+                'Ops! Precisamos de acesso à suas fotos.',
                 true,
                 'alert',
             );
@@ -153,13 +195,13 @@ function CreateProduct() {
             return;
         }
 
-        const { uri } = result;
+        // const { uri } = result;
 
-        setImage(uri);
-        setIsFilled({
-            ...isFilled,
-            image: true
+        setImage({
+            ...result, 
+            db_uri: result.uri
         });
+        setIsFilled(isFilled);
     }
 
     function handleInputBlur(field, value) {
@@ -195,6 +237,7 @@ function CreateProduct() {
     }
 
     function openCategorySelect() {
+        Keyboard.dismiss();
         modalizeRef.current?.open();
     }
 
@@ -208,7 +251,7 @@ function CreateProduct() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <NavBar title="Novo produto" />
+            <NavBar title={route.params?.product ? "Modificar produto" : "Novo produto"} />
 
             <ScrollView 
                 contentContainerStyle={styles.scrollForm}
@@ -226,7 +269,7 @@ function CreateProduct() {
                     <>
                         <Image
                             style={styles.image}
-                            source={{ uri: image }}
+                            source={image}
                         />
                         <View style={styles.editImageContainer}>
                             <Image
@@ -275,7 +318,7 @@ function CreateProduct() {
                         placeholder="Opcional"
                         placeholderTextColor={colors.gray_input}
                         multiline
-                        maxLength={300}
+                        maxLength={1200}
                         value={description}
                         // returnKeyType="next"
                         ref={input_ref_2}
@@ -287,7 +330,7 @@ function CreateProduct() {
                             'description', text, setDescription
                         )}
                     />
-                    <Text style={styles.tag}>{description.length}/300 caracteres</Text>
+                    <Text style={styles.tag}>{description.length}/1200 caracteres</Text>
                 </View>
 
                 <View style={styles.action}>
@@ -379,7 +422,7 @@ function CreateProduct() {
 
                 <View style={styles.footer}>
                     <Button 
-                        title="Criar produto" 
+                        title={route.params?.product ? "Atualizar" : "Criar produto"} 
                         onPress={handleCreateProduct} 
                         onBegan={() => setButtonPressed(true)}
                         onEnded={() => setButtonPressed(false)}
@@ -392,6 +435,8 @@ function CreateProduct() {
                 closeModal={closeCategorySelect}
                 selectedId={selectedCategory} 
                 handleSelectId={handleSelectCategory}
+                verifiedId={verifiedCategory}
+                setVerifiedId={setVerifiedCategory}
                 setCategory={setCategory}
                 isEditable={!!route.params?.product}
             />

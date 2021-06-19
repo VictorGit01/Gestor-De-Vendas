@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef,  useContext } from 'react';
 import { 
-    SafeAreaView, 
-    ScrollView,
+    SafeAreaView,
     Text,
     View,
     FlatList,
-    Button,
-    Keyboard
+    Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+
+import { PreloadContext } from '../../contexts/preload';
 
 import NavBar from '../../components/NavBar';
 import Header from '../../components/Header';
@@ -18,7 +18,9 @@ import FlyingButton from '../../components/FlyingButton';
 import Load from '../../components/Load';
 import Loader from '../../components/Loader';
 
-import database from '../../services/database';
+import database from '../../services/database_test';
+import * as products_categories_db from '../../services/database/products_categories_db';
+import * as products_db from '../../services/database/products_db';
 
 import styles from './styles';
 
@@ -27,28 +29,105 @@ function Products() {
     const [ categories, setCategories ] = useState([]);
     const [ products, setProducts ] = useState([]);
     const [ filteredProducts, setFilteredProducts ] = useState([]);
-    const [ categorySelected, setCategorySelected ] = useState(5);
-    const [ loading, setLoading ] = useState(true);
-    const [ loadingData, setLoadingData ] = useState(false);
+    const [ categorySelected, setCategorySelected ] = useState(0);
+    const [ primaryLoading, setPrimaryLoading ] = useState(true);
+    const [ secondaryLoading, setSecondaryLoading ] = useState(true);
+
+    const { preload, refreshData } = useContext(PreloadContext);
 
     const categoryRef = useRef();
     const navigation = useNavigation();
-    const totalQuantityOfProducts = products.reduce((a, b) => a + b.amount, 0)
+    const totalQuantityOfProducts = products.reduce((a, b) => a + b.amount, 0);
+
+    useEffect(() => {
+        let isActive = true;
+        
+        if (preload.refresh) {
+            handleScrollToTop();
+            setCategorySelected(0);
+        }
+        
+        async function loadCategoriesData() {
+            try {
+                // const { products_categories : data } = database;
+                const data = await products_categories_db.get();
+        
+                // const sortedData = data.sort((a, b) => (a.title > b.title) ? 1 : -1);
+        
+                if (isActive) {
+                    setCategories([
+                        {
+                            id: 0,
+                            title: "Todos",
+                        },
+                        ...data
+                    ]);
+                }
+
+            } catch(error) {
+                console.log(error);
+            }
+        }
+
+        loadCategoriesData();
+
+        return () => {
+            isActive = false;
+        }
+    }, [preload.refresh]);
+
+    useEffect(() => {
+        let isActive = true;
+
+        if (preload.refresh)
+            setSecondaryLoading(true);
+        
+        async function loadProductsData() {
+            try {
+                // const { products: data } = database;
+                const data = await products_db.get();
+                
+                // const sortedData = data.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                if (isActive && preload.refresh) {
+                    console.log('TELA DE PRODUTOS CHAMADA');
+                    // if (preload.refresh || preload.refresh === undefined) {
+                        setProducts(data);
+                        setFilteredProducts(data);
+                        preload.refresh && refreshData(false);
+                    // }
+                    setPrimaryLoading(false);
+                    setSecondaryLoading(false);
+                }
+
+            } catch(error) {
+                console.log(error);
+            }
+        }
+
+        loadProductsData();
+
+        return () => {
+            isActive = false;
+        }
+    }, [preload.refresh])
 
     function finishLoadData() {
         setTimeout(() => {
-            setLoadingData(false);
+            setSecondaryLoading(false);
         }, 1500)
     }
     
     function handleCategorySelected(category) {
-        setLoadingData(true);
+        setSecondaryLoading(true);
         setCategorySelected(category);
         setSearch('')
 
         // if (category == 5)
         //     return setFilteredProducts(products);
-        if (category == 5) {
+        if (category == 0) {
             finishLoadData();
             return setFilteredProducts(products);
         }
@@ -62,7 +141,7 @@ function Products() {
     }
 
     function handleSearchChange(value) {
-        setLoadingData(true);
+        setSecondaryLoading(true);
         setSearch(value);
 
         const filtered = products.filter(product =>
@@ -70,7 +149,7 @@ function Products() {
         );
 
         handleScrollToTop();
-        setCategorySelected(5);
+        setCategorySelected(0);
         setFilteredProducts(filtered);
 
         finishLoadData();
@@ -78,14 +157,14 @@ function Products() {
 
     function handleSubmitSearch() {
         if (search.length) {
-            setLoadingData(true);
+            setSecondaryLoading(true);
 
             const filtered = products.filter(product =>
                 product.name.toUpperCase().includes(search.toUpperCase())
             );
 
             handleScrollToTop();
-            setCategorySelected(5);
+            setCategorySelected(0);
             setFilteredProducts(filtered);
 
             finishLoadData();
@@ -93,41 +172,16 @@ function Products() {
         Keyboard.dismiss();
     }
 
-    useEffect(() => {
-        const { products_categories : data } = database;
-
-        const sortedData = data.sort((a, b) => (a.title > b.title) ? 1 : -1);
-
-        setCategories([
-            {
-                id: 5,
-                title: "Todos",
-            },
-            ...sortedData
-        ]);
-    }, []);
-
-    useEffect(() => {
-        const { products: data } = database;
-        
-        const sortedData = data.sort((a, b) => (a.name > b.name) ? 1 : -1);
-
-        setTimeout(() => {
-            setProducts(sortedData);
-            setFilteredProducts(sortedData);
-            setLoading(false);
-        }, 2000);
-    }, []);
-
     function handleScrollToTop() {
-        categoryRef.current.scrollToOffset({ offset: 0, x: 0 })
+        categoryRef.current?.scrollToOffset({ offset: 0, x: 0 })
     }
 
     function navigateToProductDetails(product) {
-        let { title } = categories.find(category => category.id == product.categories[0]);
-        let data = { ...product, category: title };
+        // let { title } = categories.find(category => category.id == product.categories[0]);
+        // let data = { ...product, category: title };
 
-        navigation.navigate('ProductDetails', { product: data });
+        // navigation.navigate('ProductDetails', { product: data });
+        navigation.navigate('ProductDetails', { id: product.id });
     }
 
     function navigateToCategories() {
@@ -139,24 +193,32 @@ function Products() {
     }
 
     function renderTextInformation() {
-        if (!filteredProducts.length && products.length && !loadingData) {
+        if (!filteredProducts.length && categorySelected !== 0 && !secondaryLoading)
+            return (
+                <Text style={styles.notFoundText}>
+                    Me desculpe! {'\n'}
+                    Mas parece que essa categoria não possui produtos.
+                </Text>
+            );
+
+        if (!filteredProducts.length && products.length && !secondaryLoading)
             return (
                 <Text style={styles.notFoundText}>
                     Ops!!! {'\n'}
                     Produto não encontrado.
                 </Text>
-            )
-        } else if (!products.length && !loadingData) {
+            );
+        
+        if (!products.length && !secondaryLoading)
             return (
                 <Text style={styles.notFoundText}>
                     Você não possui produtos no estoque. {'\n'}
                     Insira o primeiro.
                 </Text>
-            )
-        }
+            );
     }
 
-    if (loading)
+    if (primaryLoading)
         return <Load type="products" />
 
     return (
@@ -181,6 +243,7 @@ function Products() {
                         <CategoryButton 
                             title={item.title}
                             active={item.id === categorySelected}
+                            enabled={!secondaryLoading}
                             onPress={() => handleCategorySelected(item.id)}
                         />
                     )}
@@ -191,7 +254,7 @@ function Products() {
             </Header>
 
             <View style={styles.products}>
-                {!loadingData 
+                {!secondaryLoading 
                     ? <FlatList
                         data={filteredProducts}
                         keyExtractor={(item) => String(item.id)}

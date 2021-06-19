@@ -1,8 +1,6 @@
 import React from 'react';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
-import Splash from '../pages/Splash';
-import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import UserInformation from '../pages/UserInformation';
 import UpdatePassword from '../pages/UpdatePassword';
@@ -23,15 +21,6 @@ const AppRoutes = () => (
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
         }}
     >
-        <stackRoutes.Screen
-            name="Splash"
-            component={Splash}
-        />
-
-        <stackRoutes.Screen
-            name="Login"
-            component={Login}
-        />
         
         <stackRoutes.Screen
             name="Dashboard"

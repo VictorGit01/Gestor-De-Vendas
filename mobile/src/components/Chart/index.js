@@ -7,11 +7,10 @@ import SalesSummary from './SalesSummary';
 import { SalesContext } from '../../contexts/sales';
 
 import styles from './styles';
-
 import colors from '../../styles/colors';
 import fonts from '../../styles/fonts';
 
-import database from '../../services/database';
+import database from '../../services/database_test';
 import { first_semester, second_semester } from '../../functions/periods';
 import { processMonthsDataToDisplay, percentageDifference } from '../../functions/chart';
 
@@ -26,46 +25,34 @@ export default function Chart({ selectedSemester }) {
     const { setSalesInfo } = useContext(SalesContext);
 
     useEffect(() => {
-        let formatData = processMonthsDataToDisplay(database.sales)
-        // console.log('VALOR DE FIRST_SEMESTER')
-        // let data = first_semester(formatData)
-        percentageDifference(formatData, setSalesInfo);
+        let isActive = true;
 
-        let data = selectedSemester.index <= 1
-        ? first_semester(formatData)
-        : second_semester(formatData)
+        try {
+            let formatData = processMonthsDataToDisplay(database.sales)
+            percentageDifference(formatData, setSalesInfo);
+    
+            let data = selectedSemester.index <= 1
+            ? first_semester(formatData)
+            : second_semester(formatData)
+    
+            // setSemesterData(data);
+            setGraphicData(data);
+        } catch(error) {
+            console.log(error);
+        }
 
-        // setSemesterData(data);
-        setGraphicData(data);
-        // setTimeout(() => {
-        // }, 1500)
-        // console.log('FILTRANDO DADOS DE PROCESS_MONTHS_DATA_TO_DISPLAY');
-        // console.log(processMonthsDataToDisplay(data))
+        return () => {
+            isActive = false;
+        }
     }, [selectedSemester]);
 
-    useEffect(() => {
-        
-    }, [])
-
-    // useEffect(() => {
-    //     let data = [ ...first_semester(), ...second_semester() ];
-    //     percentageDifference(data, setSalesInfo);
-    // }, [semesterData]);
-
-    // useEffect(() => {
-    //     // setGraphicData(processMonthsDataToDisplay(semesterData))
-    // }, [semesterData])
-
     function setSelectMonthByName(name) {
-        // let month = semesterData.filter(a => a.name == name);
         let month = graphicData.filter(a => a.name == name);
         setSelectedMonth(month[0]);
     }
 
-    // let graphicData = processMonthsDataToDisplay(semesterData);
     let colorScales = graphicData.map((item) => item.color);
     let totalSalesCount = graphicData.reduce((a, b) => a + (b.salesCount || 0), 0);
-    // let salesSummaryData = processMonthsDataToDisplay(semesterData);
 
     return (
         <>
@@ -75,15 +62,7 @@ export default function Chart({ selectedSemester }) {
                     
                     width={width * 0.8}
                     // viewBox={`0 0 ${width * 0.8} ${width * 0.8}`} 
-                    style={{ 
-                        // flex: 1,
-                        // width: '100%', 
-                        // height: 400, 
-                        // backgroundColor: 'tomato', 
-                        // justifyContent: 'center', 
-                        // alignItems: 'center'
-                        marginTop: 20
-                    }}
+                    style={{ marginTop: 20 }}
                 >
                     <VictoryPie
                         animate={{ easing: 'exp' }}
@@ -104,8 +83,6 @@ export default function Chart({ selectedSemester }) {
                                 ...styles.shadow,
                                 alignItems: 'flex-start',
                                 justifyContent: 'center',
-                                // marginTop: 20
-                                // backgroundColor: '#000',
                             },
                         }}
                         width={width * 0.8}
